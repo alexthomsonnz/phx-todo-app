@@ -1,0 +1,116 @@
+<section class="todoapp flex flex-col gap-4 text-xl">
+  <header class="flex justify-between mb-4">
+    <h1 class="text-3xl font-bold">Todos</h1>
+  </header>
+  <div class="border border-zinc-200 shadow-2xl">
+    <div class="border-b-zinc-200 border text-center py-4 px-6">
+      <%= new(Map.put(assigns, :action, ~p"/items/new")) %>
+    </div>
+    <section class="main" style="display: block;">
+      <%!-- <input id="toggle-all" class="toggle-all" type="checkbox" />
+      <label for="toggle-all">Mark all as complete</label> --%>
+      <ul class="todo-list">
+        <%= for item <- filter(@items, @filter) do %>
+          <li data-id={item.id} class="border-b-zinc-200 border py-2 px-4">
+            <div class="flex items-center">
+              <%= if item.status == 1 do %> 
+                <.link href={~p"/items/toggle/#{item.id}"}
+                  type="checkbox"  
+                  class="w-4 h-4 text-blue-600 bg-blue-400 border-blue-300 rounded focus:ring-blue-500 focus:ring-2" 
+                >
+                </.link>
+              <% else %>
+                <.link href={~p"/items/toggle/#{item.id}"}
+                  type="checkbox"  
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                >
+                </.link>
+              <% end %>
+
+              <div class="flex-1 mx-2">
+                <%= if item.id == @editing.id do %>
+                  <%= edit(
+                    Map.put(assigns, :action, ~p"/items/#{item.id}/edit")
+                    |> Map.put(:item, item)
+                  ) %>
+                <% else %>
+                  <.link href={~p"/items/#{item}/edit"} class="dblclick">
+                    <label><%= item.text %></label>
+                  </.link>
+                  <span></span>
+                <% end %>
+              </div>
+
+              <%= if @editing.id do %>
+                <.link
+                  class="destroy w-4"
+                  href={~p"/"}
+                >
+                  x
+                </.link>
+              <% else %>
+                <.link
+                  class="destroy w-4"
+                  href={~p"/items/#{item}"}
+                  method="delete"
+                >
+                  x
+                </.link>
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+    <footer class="flex justify-evenly items-center py-2 px-4 text-sm">
+      <span><strong><%= remaining_items(@items) %></strong> item left</span>
+
+        <%= if @filter == "items" do %>
+          <div class="bg-brand/30 text-brand rounded-full px-2 leading-6">
+            <a href="/items/filter/items">All</a>
+          </div>
+        <% else %>
+          <div class="bg-brand/5 text-brand rounded-full px-2 leading-6">
+            <a href="/items/filter/items">All</a>
+          </div>
+        <% end %>
+
+        <%= if @filter == "active" do %>
+          <div class="bg-brand/30 text-brand rounded-full px-2 leading-6">
+            <a href="/items/filter/active">
+              Active
+              [<%= Enum.count(filter(@items, "active")) %>]
+            </a>
+          </div>
+        <% else %>
+          <div class="bg-brand/5 text-brand rounded-full px-2 leading-6">
+            <a href="/items/filter/active">
+              Active
+              [<%= Enum.count(filter(@items, "active")) %>]
+            </a>
+          </div>
+        <% end %>
+
+        <%= if @filter == "completed" do %>
+          <div class="bg-brand/30 text-brand rounded-full px-2 leading-6">
+            <a href="/items/filter/completed">
+              Completed
+              [<%= Enum.count(filter(@items, "completed")) %>]
+            </a>
+          </div>
+        <% else %>
+          <div class="bg-brand/5 text-brand rounded-full px-2 leading-6">
+            <a href="/items/filter/completed">
+              Completed
+              [<%= Enum.count(filter(@items, "completed")) %>]
+            </a>
+          </div>
+        <% end %>
+
+      <a class="bg-red-600/80 text-white rounded-full px-2 leading-6" href="/items/clear">
+        Clear completed
+        [<%= Enum.count(filter(@items, "completed")) %>]
+      </a>
+    </footer>
+  </div>
+</section>

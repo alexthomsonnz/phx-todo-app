@@ -1,0 +1,11 @@
+<.simple_form :let={f} for={@changeset} action={~p"/items"}>
+  <.input
+    field={f[:text]}
+    type="text"
+    class="border-b-2 border-gray-300 p-2"
+    placeholder="What needs to be done?"
+  />
+  <:actions>
+    <.button style="display:none">Save Item</.button>
+  </:actions>
+</.simple_form>

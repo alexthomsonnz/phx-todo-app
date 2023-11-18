@@ -17,7 +17,11 @@ defmodule PhxTodoWeb.Router do
   scope "/", PhxTodoWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    get "/", ItemController, :index
+    get "/items/toggle/:id", ItemController, :toggle
+    get "/items/clear", ItemController, :clear_completed
+    get "/items/filter/:filter", ItemController, :index
+    resources "/items", ItemController, except: [:show]
   end
 
   # Other scopes may use custom stacks.
